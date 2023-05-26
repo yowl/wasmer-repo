@@ -1,0 +1,25 @@
+[package]
+name = "cs-runtime-example"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+tokio = { version = "1.28.1", features = ["full"] }
+eyre = "0.6.8"
+
+wasmer = "4.0.0-alpha.1"
+wasmer-wasix = { version = "0.5.0", default-features = false, features = [
+    "sys-default",
+    #"logging",
+    #"host-fs",
+    #"host-vnet",
+    #"host-reqwest",
+] }
+wasmer-compiler-singlepass = "4.0.0-alpha.1"
+wasmer-compiler-cranelift = "4.0.0-alpha.1"
+wai-bindgen-wasmer = { version = "0.5.0" }
+wasmer-cache = { version = "4.0.0-alpha.1" }
+virtual-net = "0.2.0"
+virtual-fs = "0.3.0"
