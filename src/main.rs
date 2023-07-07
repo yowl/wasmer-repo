@@ -70,11 +70,31 @@ fn start(handle: Handle) -> Result<()> {
     let (builder, _stdin_tx, mut stdout_rx, mut stderr_rx) = create_wasi_env(capabilities, handle)?;
 
     let mut store = Store::new(engine);
-    let module = Module::new(&store, include_bytes!("../cswasi-release.wasm"))?;
+    let module = Module::new(&store, include_bytes!("../TestGenerated.wasm"))?;
 
     let mut wasi_env = builder.finalize(&mut store)?;
 
     let imports = imports! {
+      "Integers" => {
+        "a6: func(x: s32) -> ()" => Function::new(&mut store, FunctionType::new(vec![Type::I32], vec![]), |args| {
+            println!("a6: Hello from rust {args:#?}");
+            Ok(vec![])
+        })
+      },
+      "strings" => {
+        "a: func(x: string) -> ()" => Function::new(&mut store, FunctionType::new(vec![Type::I32, Type::I32], vec![]), |args| {
+            println!("a: Hello from rust {args:#?}");
+            Ok(vec![])
+        }),
+        "b: func() -> string" => Function::new(&mut store, FunctionType::new(vec![Type::I32], vec![]), |args| {
+            println!("b: Hello from rust {args:#?}");
+            Ok(vec![])
+        }),
+        "c: func(a: string, b: string) -> string" => Function::new(&mut store, FunctionType::new(vec![Type::I32, Type::I32, Type::I32, Type::I32, Type::I32], vec![]), |args| {
+            println!("c: Hello from rust {args:#?}");
+            Ok(vec![])
+        })
+      },
       "rust" => {
         "wasmImportFloat32Param" => Function::new(&mut store, FunctionType::new(vec![Type::F32], vec![]), |args| {
             println!("Hello from rust {args:#?}");
