@@ -10,7 +10,6 @@ use wasmer::{
 use wasmer_compiler_cranelift::Cranelift;
 use wasmer_wasix::{
     capabilities::{Capabilities, CapabilityThreadingV1},
-    generate_import_object_from_env,
     http::HttpClientCapabilityV1,
     PluggableRuntime, WasiEnv, WasiEnvBuilder,
 };
@@ -32,7 +31,10 @@ fn create_wasi_env(
         .capabilities(capabilities)
         .stdin(Box::new(stdin_rx))
         .stdout(Box::new(stdout))
-        .stderr(Box::new(stderr));
+        .stderr(Box::new(stderr))
+        .env("RUST_LOG", "trace")
+        .env("WASMER_BACKTRACE", "1")
+        .env("RUST_BACKTRACE", "wasmer_wasix=trace");
 
     Ok((builder, stdin_tx, stdout_rx, stderr_rx))
 }
@@ -113,6 +115,7 @@ fn start(handle: Handle) -> Result<()> {
         Ok(_) => println!("Success"),
         Err(err) => {
             println!("Runtime Error: {err}");
+            err.trace();
         }
     }
 
